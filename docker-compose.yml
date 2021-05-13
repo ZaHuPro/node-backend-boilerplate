@@ -1,0 +1,36 @@
+version: "3.7"
+services:
+  backend:
+    container_name: node-backend
+    restart: always
+    build: backend
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rethinkdb
+      - mongo
+    networks:
+      - server-network
+
+  mongo:
+    container_name: mongo
+    restart: always
+    image: mongo:4
+    volumes:
+      - ./mongodata:/data/db
+    networks:
+      - server-network
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+      - server-network
+    depends_on:
+      - mongo
+
+networks:
+  server-network:
